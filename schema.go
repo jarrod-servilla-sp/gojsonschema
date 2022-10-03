@@ -31,6 +31,7 @@ import (
 	"math/big"
 	"reflect"
 	"regexp"
+	"strings"
 	"text/template"
 
 	"github.com/xeipuuv/gojsonreference"
@@ -73,7 +74,6 @@ func (d *Schema) SetRootSchemaName(name string) {
 // Pretty long function ( sorry :) )... but pretty straight forward, repetitive and boring
 // Not much magic involved here, most of the job is to validate the key names and their values,
 // then the values are copied into subSchema struct
-//
 func (d *Schema) parseSchema(documentNode interface{}, currentSchema *subSchema) error {
 
 	if currentSchema.draft == nil {
@@ -250,7 +250,7 @@ func (d *Schema) parseSchema(documentNode interface{}, currentSchema *subSchema)
 	if existsMapKey(m, KEY_TYPE) {
 		if isKind(m[KEY_TYPE], reflect.String) {
 			if k, ok := m[KEY_TYPE].(string); ok {
-				err := currentSchema.types.Add(k)
+				err := currentSchema.types.Add(strings.ToLower(k))
 				if err != nil {
 					return err
 				}
